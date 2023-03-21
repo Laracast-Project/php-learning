@@ -1,5 +1,8 @@
 <?php
 
+namespace Core;
+
+use PDO;
 
 // Connect to MySQL database
 class Database{
