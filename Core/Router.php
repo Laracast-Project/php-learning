@@ -2,6 +2,11 @@
 
 namespace Core;
 
+use Core\Middleware\Auth;
+use Core\Middleware\Guest;
+use Core\Middleware\Middleware;
+use mysql_xdevapi\TableInsert;
+
 class Router{
     protected $routes = [];
 
@@ -56,19 +61,7 @@ class Router{
         foreach ($this->routes as $route){
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)){
                 // apply middleware
-                if ($route['middleware'] === 'guest'){
-                    if (isset($_SESSION['user']) && $_SESSION['user']) {
-                        header('Location: /');
-                        exit();
-                    }
-                }
-
-                if ($route['middleware'] === 'auth'){
-                    if (!isset($_SESSION['user'])) {
-                        header('Location: /');
-                        exit();
-                    }
-                }
+                Middleware::resolve($route['middleware']);
 
                 return require base_path($route['controller']);
             }
